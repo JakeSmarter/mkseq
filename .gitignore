@@ -1,3 +1,11 @@
 *.class
 *.jar
 *.pdf
+build/
+dist/
+doc/
+install/
+lib/
+nbproject/
+res/
+test/

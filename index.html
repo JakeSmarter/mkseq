@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xml:lang="en"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.w3.org/1999/xhtml http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+		<meta name="Content-Style" content="text/css"/>
+		<meta name="author" content="Mapillary AB"/>
+		<link href="https://unpkg.com/mapillary-css@1.0.1/css/mapillary.min.css" rel="stylesheet"/>
+		<title>Make Sequence (mkseq)</title>
+	</head>
+<body class="bg-green">
+<h1 class="center" style="margin-bottom:0"><a href="mkseq.zip">Download <code>mkseq</code></a></h1>
+<div class="center" style="margin:0">(requires Java&trade; 7)</div>
+<hr/>
+<h1 align="center">MKSEQ</h1>
+<a href="#NAME">NAME</a><br/>
+<a href="#SYNOPSIS">SYNOPSIS</a><br/>
+<a href="#DESCRIPTION">DESCRIPTION</a><br/>
+<a href="#OPTIONS">OPTIONS</a><br/>
+<a href="#EXAMPLE">EXAMPLE</a><br/>
+<a href="#SEE ALSO">SEE ALSO</a><br/>
+<a href="#LICENSE">LICENSE</a><br/>
+<a href="#LEGAL">LEGAL</a><br/>
+<hr/>
+<h2><a name="NAME">NAME</a></h2>
+<p style="margin-left:11%;margin-top:1em">mkseq - a tool for preparing photo
+sequences for upload to Mapillary</p>
+
+<h2><a name="SYNOPSIS">SYNOPSIS</a></h2>
+
+<p style="margin-left:11%;margin-top:1em"><b>mkseq</b> [<i>options...</i>] [<i>input-images...</i>] [<i>output-directory</i>]</p>
+
+<h2><a name="DESCRIPTION">DESCRIPTION</a></h2>
+
+<p style="margin-left:11%;margin-top:1em"><b>mkseq</b> is a tool for doing
+basic preprocessing and optimization of sequences of photos on the command line
+and via scripts for upload to Mapillary. It has been developed with Mapillary
+users in mind who&mdash;for whatever reason&mdash;cannot or do not want to use
+a mobile phone camera and a respective Mapillary app to take photos for upload
+to Mapillary. Dedicated digital cameras are often superior in the domains of
+optics and/or photo sensor characteristics. And, although dedicated digital
+cameras may be superior in the domains they have been built for, they may have
+shortcomings in other domains, like GPS accuracy or lack of certain GPS data.
+Some users might have a large archive of geo-tagged photos they wish to share
+with the world on Mapillary but the photos may lack certain GPS data. Whatever
+the reason, photos which have not been shot with the Mapillary app may require
+or would benefit of some preprocessing or optimization prior to upload.</p>
+
+<p style="margin-left:11%;margin-top:1em">
+	<b>NOTE:</b> Uploading photos to Mapillary does not require use of the
+<b>mkseq</b> tool prior to upload.</p>
+
+<p style="margin-left:11%;margin-top:1em">
+Because the <b>mkseq</b> tool&rsquo;s primary purpose is serving Mapillary, it
+is not &ldquo;feature complete&rdquo; nor a general purpose tool for processing
+geo-tagged photos. It also does not &ldquo;<i>automagically</i>&rdquo; enhance
+photos.</p>
+
+<p style="margin-left:11%;margin-top:1em">Smoothing, for example, has been
+developed in order to tackle low accuracy GPS receivers and remove jitter from
+sequences. It is implemented as a simple arithmetic or harmonic mean function
+over a fixed number of photos. It does not employ any sophisticated signal
+processing math.<br/>
+Furthermore, functions for reducing the upload (or storage) size of photos do
+not try to find optimal balance between quality and size. For optimal results,
+the output of <b>mkseq</b> should be checked and perhaps further processed with
+other tools or a chain of tools. Note that <b>mkseq</b> has been primarily
+developed as a prototype of functions which may be implemented in the
+<a href="https://wiki.openstreetmap.org/wiki/JOSM/Plugins/Mapillary">Mapillary
+plug-in for JOSM</a> in the future.</p>
+
+<h2><a name="OPTIONS">OPTIONS</a></h2>
+
+
+
+<p style="margin-left:11%;margin-top:1em"><b>-a</b> [<i>GPSAltitude</i>]</p>
+
+<p style="margin-left:22%">Keep or add GPS altitude data in meters in
+reference to sea level. Negative values denote depth below sea level. If the
+<i>GPSAltitude</i> option argument is specified it must be a rational number.
+<b>-a</b> overrides <b>-sa</b>.</p>
+
+<p style="margin-left:11%"><b>-c</b> [<i>GPSImgDirection</i>[<b>T</b>|<b>M</b>]]</p>
+
+<p style="margin-left:22%">Center GPS location and point direction outwards
+(does not create an XMP panorama). If photos lack a direction of image tag then
+<i>GPSImgDirection</i> can denote the direction in degrees (to true north by
+default) of the first photo. This option cannot be used with options
+<b>-l</b> or <b>-s</b>. <br/>
+Use the <b>T</b> or <b>M</b> suffix to denote true north or magnetic north
+reference respectively.</p>
+
+<table width="100%"
+	border="0"
+	rules="none"
+	frame="void"
+	cellspacing="0"
+	cellpadding="0">
+	<tr valign="top" align="left">
+		<td width="11%"/>
+		<td width="3%">
+			<p><b>-d</b></p>
+		</td>
+		<td width="8%"/>
+		<td width="78%">
+<p>Drop all EXIF and other meta data except GPS data. This option is useful for
+removing camera vendor data and photometric properties like exposure time or
+flashlight fire (helps a bit in protecting privacy).</p>
+		</td>
+	</tr>
+</table>
+
+<p style="margin-left:11%"><b>-g</b> <i>GPXFile</i></p>
+
+<p style="margin-left:22%">If <i>GPXFile</i> does not exist create a GPX file
+from photos, otherwise align photos to track in <i>GPXFile</i>. If
+<i>GPXFile</i> exists this option cannot be used with options <b>-c</b>,
+<b>-l</b>, or <b>-s</b>.</p>
+
+<table width="100%"
+	border="0"
+	rules="none"
+	frame="void"
+	cellspacing="0"
+	cellpadding="0">
+	<tr valign="top" align="left">
+		<td width="11%"/>
+		<td width="3%">
+			<p><b>-i</b></p>
+		</td>
+		<td width="8%"></td>
+		<td width="78%">
+<p>Display time stamps in ISO 8601 notation (only works with <b>-v</b>).</p>
+		</td>
+	</tr>
+	<tr valign="top" align="left">
+		<td width="11%"/>
+		<td width="3%"><p><b>-l</b></p></td>
+		<td width="8%"/>
+		<td width="78%">
+<p>Interpolate linearly from first to last photo. This option cannot be used
+with options <b>-c</b> or <b>-s</b>.</p> 
+		</td>
+	</tr>
+	<tr valign="top" align="left">
+		<td width="11%"/>
+		<td width="3%">
+			<p><b>-n</b></p>
+		</td>
+		<td width="8%"/>
+		<td width="78%">
+<p>Normalize and add or overwrite the GPS direction of image tag.</p>
+		</td>
+	</tr>
+</table>
+
+<p style="margin-left:11%"><b>-p</b> <i>GPSSpeed</i>[<b>K</b>|<b>M</b>|<b>N</b>]</p>
+
+<p style="margin-left:22%">Add or overwrite the GPS speed of receiver tag (in
+km/h by default). If the <i>GPSSpeed</i> option argument is specified it must be
+a rational number. Negative <i>GPSSpeed</i> values denote movement in reverse
+direction.<br/><b>K</b> unit of <i>GPSSpeed</i> is in kilometers per hour
+(metric).<br/><b>M</b> unit of <i>GPSSpeed</i> is in miles per hour (imperial).<br/>
+<b>N</b> unit of <i>GPSSpeed</i> is in nautical miles per hour.</p>
+
+<p style="margin-left:11%"><b>-q</b> <i>0.0-1.0</i></p>
+
+<p style="margin-left:22%">JPEG image compression quality level to apply. The
+quality level must be a rational number in the range of <b>0</b> to <b>1</b>
+inclusively. This option may be useful for reducing upload size on slow or
+metered internet connections.</p>
+
+<table width="100%"
+	border="0"
+	rules="none"
+	frame="void"
+	cellspacing="0"
+	cellpadding="0">
+	<tr valign="top" align="left">
+		<td width="11%"/>
+		<td width="3%"><p><b>-r</b></p></td>
+		<td width="8%"/>
+		<td width="78%">
+<p>Resize to Mapillary&rsquo;s preferred full resolution (2048x1536) while
+preserving the aspect ratio. This option may be useful for reducing upload size
+on slow or metered internet connections.</p>
+		</td>
+	</tr>
+</table>
+
+
+<p style="margin-left:11%"><b>-s</b>[<b>a</b>][<b>h</b>][<b>s</b>][<b>t</b>][<i>n</i>]</p>
+
+<p style="margin-left:22%">Smooth the GPS location of photos. Optionally, the
+number of photos to smooth over can be limited to <i>n</i>. Setting <i>n</i> to
+values of <b>3</b> to <b>11</b> usually gives better results on curved sequences
+than smoothing over all photos. If the <i>n</i> option argument is specified it
+must be a natural number. By default, smoothing is arithmetic.</p>
+
+<table width="100%"
+	border="0"
+	rules="none"
+	frame="void"
+	cellspacing="0"
+	cellpadding="0">
+	<tr valign="top"
+		align="left">
+		<td width="22%"/>
+		<td width="4%">
+			<p><b>-sa</b></p></td>
+		<td width="6%"/>
+		<td width="68%">
+<p>Smooth GPS altitude additionally.</p>
+		</td>
+	</tr>
+	<tr valign="top"
+		align="left">
+		<td width="22%"/>
+		<td width="4%">
+			<p><b>-sh</b></p>
+		</td>
+		<td width="6%"/>
+		<td width="68%">
+			<p>Smooth GPS data harmonically.</p>
+		</td>
+	</tr>
+	<tr valign="top"
+		align="left">
+		<td width="22%"/>
+		<td width="4%">
+			<p><b>-ss</b></p></td>
+		<td width="6%"/>
+		<td width="68%">
+			<p>Smooth GPS speed additionally.</p>
+		</td>
+	</tr>
+	<tr valign="top" align="left">
+		<td width="22%"/>
+		<td width="4%">
+			<p><b>-st</b></p>
+		</td>
+		<td width="6%"/>
+		<td width="68%">
+			<p>Smooth GPS date and time stamp additionally.</p>
+		</td>
+	</tr>
+</table>
+<p style="margin-left:22%;margin-top:1em">This option cannot be used with
+options <b>-c</b> or <b>-l</b>.</p>
+
+<table width="100%"
+	border="0"
+	rules="none"
+	frame="void"
+	cellspacing="0"
+	cellpadding="0">
+	<tr valign="top" align="left">
+		<td width="11%"/>
+		<td width="7%">
+			<p style="margin-top:1em"><b>-t</b>[<b>o</b>]</p>
+		</td>
+		<td width="4%"/>
+		<td width="78%">
+<p style="margin-top:1em">Add GPS date and time tags from file system&rsquo;s
+modification time stamp of image file where missing.</p>
+		</td>
+	</tr>
+</table>
+
+<p style="margin-left:22%"><b>-to</b></p>
+
+<table width="100%"
+	border="0"
+	rules="none"
+	frame="void"
+	cellspacing="0"
+	cellpadding="0">
+	<tr valign="top" align="left">
+		<td width="32%"/>
+		<td width="68%">
+<p style="margin-top:1em">Overwrite GPS date and time tags with file
+system&rsquo;s modification time stamp.</p>
+		</td>
+	</tr>
+</table>
+
+<p style="margin-left:22%;margin-top:1em">Beware of time zone agnosticism and
+varying time stamp granularity of file systems, like FAT32, ZIP archives, or
+some network file systems. When processing files with the <b>-t</b> option, it
+is often best to set the local time zone applicable to the source photos before
+running <b>mkseq</b>. On some operating systems the local time zone can be set
+by explicitly setting the <b>TZ</b> environment variable or the
+<b>user.timezone</b> Java VM property per <b>mkseq</b> instance.</p>
+
+<table width="100%"
+	border="0"
+	rules="none"
+	frame="void"
+	cellspacing="0"
+	cellpadding="0">
+	<tr valign="top" align="left">
+		<td width="11%"/>
+		<td width="3%">
+<p style="margin-top:1em"><b>-u</b></p>
+		</td>
+		<td width="8%"/>
+		<td width="78%">
+<p style="margin-top: 1em">Display time stamps in UTC time zone (only works
+with <b>-v</b>).</p>
+		</td>
+	</tr>
+	<tr valign="top" align="left">
+		<td width="11%"/>
+		<td width="3%">
+			<p><b>-v</b></p>
+		</td>
+		<td width="8%"/>
+		<td width="78%">
+<p>Be verbose when processing files.</p>
+		</td>
+	</tr>
+</table>
+
+<p style="margin-left:11%"><b>-x</b> <i>ImageDescription</i></p>
+
+<p style="margin-left:22%">Add <i>ImageDesciption</i> EXIF field. This option
+is useful for labeling photos pertinent to street names or other human readable
+locations.</p>
+
+<p style="margin-left:11%"><i>input-image</i></p>
+
+<p style="margin-left:22%">Path to a JPEG image file to process.</p>
+
+<p style="margin-left:11%"><i>output-directory</i></p>
+
+<p style="margin-left:22%">Path to output directory. If the output directory
+does not exist then it and any of its parent directories are created.</p>
+
+<p style="margin-left:11%;margin-top:1em">If no options are specified then
+the default options are <b>-d</b>, <b>-s</b>, <b>-n</b>, and
+<b>-r</b>.</p>
+
+<p style="margin-left:11%;margin-top:1em">Options may be prefixed with either
+<b>-</b>, <b>--</b>, or <b>/</b>.</p>
+
+<h2><a name="EXAMPLE">EXAMPLE</a></h2>
+
+<p style="margin-left:11%;margin-top:1em"><b>mkseq photo-0.jpg
+photo-1.jpg photo-2.jpg Mapillary/output</b></p>
+
+<p style="margin-left:22%">Processes the input files <b>photo-0.jpg</b>,
+<b>photo-1.jpg</b>, and <b>photo-2.jpg</b> into the output directory
+<b>Mapillary/output</b> by dropping all EXIF meta data except GPS data,
+smoothing the location of all photos over all photos (n = 3), normalizing the
+GPS direction, and resizing to 2,048 by 1,536 pixles.</p>
+
+<p style="margin-left:11%"><b>mkseq -t -x "Main Street" photo.jpg
+Mapillary/upload</b></p>
+
+<p style="margin-left:22%">Adds, if missing, GPS date and time tags to
+<b>photo.jpg</b> based on the file&rsquo;s last modification time stamp stored
+by the file system, adds the label <b>Main Steet</b> and stores it in the
+<b>Mapillary/upload</b> directory.</p>
+
+<h2><a name="SEE ALSO">SEE ALSO</a></h2>
+
+<p style="margin-left:11%;margin-top:1em"><a href="https://gitne.github.io/mkseq">Make Sequence Webpage</a>
+<br/>
+<a href="https://www.mapillary.com">Mapillary</a></p>
+
+<h2><a name="LICENSE">LICENSE</a></h2>
+
+<p style="margin-left:11%;margin-top:1em">Copyright 2016 Mapillary AB, Sweden</p>
+
+<p style="margin-left:11%;margin-top:1em">Licensed under the Apache License,
+Version 2.0 (the "License"); you may not use this software except in
+compliance with the License. You may obtain a copy of the License at</p>
+
+<p style="margin-left:11%;margin-top:1em"><a href="https://www.apache.org/licenses/LICENSE-2.0">https://www.apache.org/licenses/LICENSE-2.0</a></p>
+
+<p style="margin-left:11%;margin-top:1em">Unless required by applicable law
+or agreed to in writing, software distributed under the License is distributed
+on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+express or implied. See the License for the specific language governing
+permissions and limitations under the License.</p>
+
+<h2><a name="LEGAL">LEGAL</a></h2>
+
+<p style="margin-left:11%;margin-top:1em">Mapillary is a registered trademark
+of Mapillary AB, Malmö, Kingdom of Sweden</p>
+<hr/>
+</body></html>

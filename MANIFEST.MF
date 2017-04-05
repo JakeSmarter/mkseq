@@ -1,5 +1,0 @@
-Manifest-Version: 1.0
-Class-Path: commons-imaging.jar
-Implementation-Title: Make Sequence
-Implementation-Vendor: Mapillary AB, Sweden
-Implementation-Version: 0.1.0.0
